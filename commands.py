@@ -5,27 +5,8 @@ from discord.ext import commands
 from discord import app_commands
 from datetime import timedelta
 import typing
-load_dotenv()
-print("Bot launching...")
+
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
-
-@bot.event
-async def on_ready():
-    print('Bot launched !')
-    try:
-        synced = await bot.tree.sync()
-        print(f"Commandes synchronisées: {len(synced)}")
-    except Exception as e:
-        print(e)
-
-'''
-#Yohon troll :
-@bot.event
-async def on_message(message: discord.Message):
-    if message.content.lower() == 'est ce que yohon est con?':
-        channel = message.channel
-        await channel.send('Oui !')
-'''
 
 @bot.tree.command(name='help', description='Affiche les différentes commandes du bot')
 async def help(interaction: discord.Interaction):
@@ -69,9 +50,45 @@ operation_list = {
     '/': 'Division'
 }
 
-@bot.tree.command(name='calculate', description='Permet de faire un calcul')
+@bot.tree.command(name='calculate', description='Permet de faire un calcul entre deux nombres entiers')
 async def calculate(interaction: discord.Interaction, nombre1: int, nombre2: int, operation: str):
-    await interaction.response.send_message('test')
+    try:
+        embed = discord.Embed(
+            title = 'Calcul',
+            color = 0x17E81F,
+        )
+        Titre = ''
+        result = None
+        if operation == '+':
+            result = nombre1 + nombre2
+            Titre = 'Addition'
+        elif operation == '-':
+            result = nombre1 - nombre2
+            Titre = 'Soustraction'
+        elif operation == '*':
+            result = nombre1 * nombre2
+            Titre = 'Multiplication'
+        elif operation == '/':
+            if nombre2 == 0:
+                Titre = 'Erreur !'
+                embed.color = 0xA60F0F
+                embed.add_field(name=Titre, value='Division par zéro impossible !')
+                await interaction.response.send_message(embed=embed)
+                return
+            result = nombre1 / nombre2
+            Titre = 'Division'
+        embed.add_field(name=Titre, value=f'**{nombre1}** **{operation}** **{nombre2}**')
+        embed.add_field(name='Résultat', value=f'**{result}**')
+        await interaction.response.send_message(embed=embed) 
+    except Exception as e:
+        embed = discord.Embed(
+            titre = 'Calcul',
+            color = 0xA60F0F
+        )
+        embed.add_field('Erreur lors du calcul !')
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        print(e)
+    
 
 @calculate.autocomplete('operation')
 async def operation_autocomplete(
@@ -89,9 +106,9 @@ async def operation_autocomplete(
             for operation_sign, desc in operation_list.items()
             ]
 
-    return operations[:5]
+    await interaction.response.autocomplete(operations[:25])
 
-    
-
-    
-bot.run(os.getenv('DISCORD_TOKEN'))
+slash_commands = [help, timeout, ban, unban, calculate]
+def setup_commands(bot: discord.ext.commands.Bot):
+    for command in slash_commands:
+        bot.tree.add_command(command)
