@@ -22,6 +22,10 @@ class OwnerCommands(commands.Cog):
         except Exception as e:
             await ctx.send("Une erreur s'est produite lors de l'arrêt du bot.")
             print(f"An error occurred in the stop command: {e}")    
+    @commands.command(name="ping", help="Display the latency")
+    async def ping(self, ctx):
+        latency = round(self.bot.latency * 1000)
+        await ctx.send(f"Latency: {latency}ms")
 
 async def setup(bot):
     await bot.add_cog(OwnerCommands(bot))
