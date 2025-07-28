@@ -26,7 +26,7 @@ try:
         except Exception as e:
             print(e)    
 
-    #keep_alive()
+    keep_alive()
     if __name__ == '__main__':
         bot.run(os.getenv('DISCORD_TOKEN'))
 
