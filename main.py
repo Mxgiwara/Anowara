@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord import app_commands
-
+from keep_alive import keep_alive
 
 load_dotenv()
 
@@ -26,7 +26,7 @@ try:
         except Exception as e:
             print(e)    
 
-
+    keep_alive()
     if __name__ == '__main__':
         bot.run(os.getenv('DISCORD_TOKEN'))
 
