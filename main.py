@@ -10,7 +10,7 @@ load_dotenv()
 try:
     class Bot(commands.Bot):
         async def setup_hook(self):
-            for extension in ['commands', 'moderation', 'owner']:
+            for extension in ['commands', 'moderation', 'owner', 'gpt']:
                 await self.load_extension(f'cogs.{extension}')
 
     bot = Bot(command_prefix="*", intents=discord.Intents.all())
@@ -26,7 +26,7 @@ try:
         except Exception as e:
             print(e)    
 
-    keep_alive()
+    #keep_alive()
     if __name__ == '__main__':
         bot.run(os.getenv('DISCORD_TOKEN'))
 
