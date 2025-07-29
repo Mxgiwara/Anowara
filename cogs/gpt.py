@@ -13,37 +13,15 @@ class ChatGPTCog(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
-        # Parle seulement si le message commence par "gpt:" (par exemple)
         if message.content.startswith("gpt:"):
             prompt = message.content[4:].strip()
             user_id = message.author.id
-            # Récupère ou crée l'historique
-            history = self.histories.get(user_id, [])
-            history.append({"role": "user", "content": prompt})
-            try:
-                response = self.client.chat.completions.create(
-                    model="gpt-4.1-mini",
-                    messages=history,
-                    max_tokens=500
-                )
-                answer = response.choices[0].message.content
-                embed = discord.Embed(
-                    title="GPT Response",
-                    description=answer,
-                    color=discord.Color.blue()
-                )
-                await message.channel.send(embed=embed)
-                history.append({"role": "assistant", "content": answer})
-                self.histories[user_id] = history[-10:]  # Garde les 10 derniers échanges
-            except Exception as e:
-                await message.channel.send("Erreur avec ChatGPT.")
-                print(e)
+            
             if message.attachments:
                 image = message.attachments[0]
                 image_url = image.url
 
                 try:
-                    # Appel à GPT-4 Vision
                     response = self.client.chat.completions.create(
                         model="gpt-4.1-mini",
                         messages=[
@@ -63,9 +41,33 @@ class ChatGPTCog(commands.Cog):
                     await message.channel.send(embed=embed)
 
                 except Exception as e:
-                    await message.channel.send("Erreur lors de l’analyse de l’image.")
+                    await message.channel.send(f"Error: {e}")
                     print(e)
                 return
+            else:
+                # Récupère ou crée l'historique
+                history = self.histories.get(user_id, [])
+                history.append({"role": "user", "content": prompt})
+                try:
+                    response = self.client.chat.completions.create(
+                        model="gpt-4.1-mini",
+                        messages=history,
+                        max_tokens=500
+                    )
+                    answer = response.choices[0].message.content
+                    embed = discord.Embed(
+                        title="GPT Response",
+                        description=answer,
+                        color=discord.Color.blue()
+                    )
+                    await message.channel.send(embed=embed)
+                    history.append({"role": "assistant", "content": answer})
+                    self.histories[user_id] = history[-10:]  
+                except Exception as e:
+                    await message.channel.send(f"Error : {e}")
+                    print(e)
+            
+            
 
 async def setup(bot):
     await bot.add_cog(ChatGPTCog(bot))
