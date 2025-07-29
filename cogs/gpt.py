@@ -23,7 +23,8 @@ class ChatGPTCog(commands.Cog):
             try:
                 response = self.client.chat.completions.create(
                     model="gpt-4.1-mini",
-                    messages=history
+                    messages=history,
+                    max_tokens=500
                 )
                 answer = response.choices[0].message.content
                 embed = discord.Embed(
@@ -37,6 +38,34 @@ class ChatGPTCog(commands.Cog):
             except Exception as e:
                 await message.channel.send("Erreur avec ChatGPT.")
                 print(e)
+            if message.attachments:
+                image = message.attachments[0]
+                image_url = image.url
+
+                try:
+                    # Appel à GPT-4 Vision
+                    response = self.client.chat.completions.create(
+                        model="gpt-4.1-mini",
+                        messages=[
+                            {"role": "user", "content": [
+                                {"type": "text", "text": prompt},
+                                {"type": "image_url", "image_url": {"url": image_url}}
+                            ]}
+                        ],
+                        max_tokens=1000
+                    )
+                    answer = response.choices[0].message.content
+                    embed = discord.Embed(
+                        title="GPT Response",
+                        description=answer,
+                        color=discord.Color.purple()
+                    )
+                    await message.channel.send(embed=embed)
+
+                except Exception as e:
+                    await message.channel.send("Erreur lors de l’analyse de l’image.")
+                    print(e)
+                return
 
 async def setup(bot):
     await bot.add_cog(ChatGPTCog(bot))
