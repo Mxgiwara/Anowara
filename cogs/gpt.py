@@ -1,4 +1,5 @@
 import os
+from urllib import response
 import openai
 import discord
 from discord.ext import commands
@@ -39,13 +40,22 @@ class ChatGPTCog(commands.Cog):
                         color=discord.Color.purple()
                     )
                     await message.channel.send(embed=embed)
+                    
+                    #Logger
+                    print("=== GPT IMAGE RESPONSE ===")
+                    print(f"Model utilisé : {response.model}")
+                    print(f"Tokens (prompt) : {response.usage.prompt_tokens}")
+                    print(f"Tokens (réponse) : {response.usage.completion_tokens}")
+                    print(f"Tokens (total) : {response.usage.total_tokens}")
+                    
 
                 except Exception as e:
                     await message.channel.send(f"Error: {e}")
                     print(e)
                 return
             else:
-                # Récupère ou crée l'historique
+                
+                # History management
                 history = self.histories.get(user_id, [])
                 history.append({"role": "user", "content": prompt})
                 try:
@@ -63,6 +73,14 @@ class ChatGPTCog(commands.Cog):
                     await message.channel.send(embed=embed)
                     history.append({"role": "assistant", "content": answer})
                     self.histories[user_id] = history[-10:]  
+                    
+                    #Logger
+                    print("=== GPT TEXT RESPONSE ===")
+                    print(f"Model utilisé : {response.model}")
+                    print(f"Tokens (prompt) : {response.usage.prompt_tokens}")
+                    print(f"Tokens (réponse) : {response.usage.completion_tokens}")
+                    print(f"Tokens (total) : {response.usage.total_tokens}")
+                
                 except Exception as e:
                     await message.channel.send(f"Error : {e}")
                     print(e)
