@@ -9,7 +9,7 @@ load_dotenv()
 try:
     class Bot(commands.Bot):
         async def setup_hook(self):
-            for extension in ['commands', 'moderation', 'owner', 'gpt']:
+            for extension in ['commands', 'moderation', 'owner', 'gpt', 'help']:
                 await self.load_extension(f'cogs.{extension}')
 
     bot = Bot(command_prefix="*", intents=discord.Intents.all())

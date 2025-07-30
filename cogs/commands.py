@@ -10,59 +10,7 @@ class UsefulCogs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     try:
-        try:
-            @app_commands.command(name='help', description='Affiche les différentes commandes du bot')
-            async def help_command(self, interaction: discord.Interaction):
-                
-                select = discord.ui.Select(
-                    placeholder="Choisir une option",
-                    options=[
-                        discord.SelectOption(label='Modération', description='Voir les commandes de modération', value='embed1'),
-                        discord.SelectOption(label='Calcul', description='Voir les commandes de calculs', value='embed2')
-                    ]
-                )
-
-                embed = discord.Embed(
-                    title="Liste des commandes",
-                    color = 0x2764ad,
-                    )
-                
-            
-
-                async def select_callback(interaction_select: discord.Interaction):
-                    value = select.values[0]
-                    if value == "embed1":
-                        new_embed = discord.Embed(
-                            title='Modération', 
-                            description=f'\
-                            **/ban** : Permet de bannir un utilisateur\n \
-                            **/unban** : Permet de débannir un utilisateur\n \
-                            **/timeout** : Permet de timeout un utilisateur\
-                            ', 
-                            color=0x2764ad
-                            )
-                    else:
-                        new_embed = discord.Embed(
-                            title='Calcul', 
-                            description=f'\
-                            **/calculate** : Permet d\'utiliser la calculatrice\n\
-                            **/integrale** : Permet de calculer une intégrale\
-                            ', 
-                            color= 0x2764ad)
-                    await interaction_select.response.edit_message(embed=new_embed, view=view)
-                
-                select.callback = select_callback
-                view = discord.ui.View()
-                view.add_item(select)
-                
-                await interaction.response.send_message(embed=embed, view=view)
-
-        except Exception as e:
-            print(f"An error occurred in the help command: {e}")
-
-
-
-    
+           
         #Calculator command
         @app_commands.command(name='calculate', description='Permet de faire un calcul entre deux nombres')
         async def calculate(self, interaction: discord.Interaction, nombre1: float, nombre2: float, operation: str):
@@ -99,7 +47,7 @@ class UsefulCogs(commands.Cog):
                     title = 'Calcul',
                     color = 0xA60F0F
                 )
-                embed.add_field('Erreur lors du calcul !')
+                embed.add_field(name='Erreur', value='Une erreur est survenue lors du calcul. Veuillez vérifier les valeurs saisies et l\'opération choisie.', inline=False)
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 print(e)
             
