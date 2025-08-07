@@ -31,7 +31,7 @@ class ChatGPTCog(commands.Cog):
                                 {"type": "image_url", "image_url": {"url": image_url}}
                             ]}
                         ],
-                        max_completion_tokens=1000
+                        
                     )
                     answer = response.choices[0].message.content
                     embed = discord.Embed(
@@ -62,7 +62,7 @@ class ChatGPTCog(commands.Cog):
                     response = self.client.chat.completions.create(
                         model="o4-mini-2025-04-16",
                         messages=history,
-                        max_completion_tokens=500
+                        
                     )
                     answer = response.choices[0].message.content
                     embed = discord.Embed(
