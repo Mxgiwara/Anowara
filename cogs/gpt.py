@@ -24,7 +24,7 @@ class ChatGPTCog(commands.Cog):
 
                 try:
                     response = self.client.chat.completions.create(
-                        model="o4-mini-2025-04-16",
+                        model="gpt-5-2025-08-07",
                         messages=[
                             {"role": "user", "content": [
                                 {"type": "text", "text": prompt},
@@ -60,7 +60,7 @@ class ChatGPTCog(commands.Cog):
                 history.append({"role": "user", "content": prompt})
                 try:
                     response = self.client.chat.completions.create(
-                        model="o4-mini-2025-04-16",
+                        model="gpt-5-2025-08-07",
                         messages=history,
                         
                     )
